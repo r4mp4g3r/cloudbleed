@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CloudBleed Vulnerability Demonstration</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <h1>CloudBleed Vulnerability Demonstration</h1>
+        <p class="subtitle">Simulation of the 2017 Cloudflare parser vulnerability</p>
+    </header>
+
+    <main>
+        <div class="tabs">
+            <button class="tab-button active" data-tab="manual-demo">Manual Demo</button>
+            <!-- <button class="tab-button" data-tab="scenario-demo">Real World Scenario</button> -->
+            <button class="tab-button" data-tab="memory-view">Server Memory</button>
+            <button class="tab-button" data-tab="about">About CloudBleed</button>
+        </div>
+
+        <div id="manual-demo" class="tab-content active">
+            <div class="demo-controls">
+                <h2>CloudBleed Manual Testing</h2>
+                <div class="form-group">
+                    <label for="site-selector">Target Site:</label>
+                    <select id="site-selector">
+                        <option value="bank.example.com">bank.example.com</option>
+                        <option value="email.example.com">email.example.com</option>
+                        <option value="shopping.example.com">shopping.example.com</option>
+                        <option value="api.example.com">api.example.com</option>
+                        <option value="cloud.example.com">cloud.example.com</option>
+                        <option value="social.example.com">social.example.com</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="html-input">HTML Content:</label>
+                    <textarea id="html-input" rows="8" placeholder="Enter HTML content here"></textarea>
+                </div>
+                <div class="button-group">
+                    <button id="use-trigger" class="secondary">Use Trigger Sample</button>
+                    <button id="use-complex" class="secondary">Use Complex Sample</button>
+                </div>
+                <div class="button-group">
+                    <button id="send-vulnerable" class="primary">Send to Vulnerable Parser</button>
+                    <button id="send-fixed" class="primary">Send to Fixed Parser</button>
+                    <button id="reset-memory" class="secondary">Reset Server Memory</button>
+                </div>
+            </div>
+            
+            <div class="results-container">
+                <div class="result-box">
+                    <h3>Vulnerable Parser Result</h3>
+                    <div id="vulnerable-status" class="status-indicator">
+                        <span class="status-dot"></span>
+                        <span class="status-text">Waiting for request...</span>
+                    </div>
+                    <div id="vulnerable-result" class="result-content">
+                        <div class="placeholder">Results will appear here</div>
+                    </div>
+                </div>
+                
+                <div class="result-box">
+                    <h3>Fixed Parser Result</h3>
+                    <div id="fixed-status" class="status-indicator">
+                        <span class="status-dot"></span>
+                        <span class="status-text">Waiting for request...</span>
+                    </div>
+                    <div id="fixed-result" class="result-content">
+                        <div class="placeholder">Results will appear here</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="scenario-demo" class="tab-content">
+            <h2>Real-World CloudBleed Scenario</h2>
+            <p>This demonstration simulates how the CloudBleed vulnerability could leak sensitive data between unrelated websites.</p>
+            
+            <div class="scenario-container">
+                <div class="scenario-controls">
+                    <h2>CloudBleed Real-World Scenario</h2>
+                    <div class="button-group">
+                        <button id="run-scenario" class="primary">Run Demonstration</button>
+                        <button id="reset-scenario" class="secondary">Reset</button>
+                    </div>
+                </div>
+                
+                <div class="scenario-steps">
+                    <h3>Scenario Steps:</h3>
+                    <ol id="scenario-steps-list">
+                        <li class="step">User visits <strong>bank.example.com</strong> and logs into their account</li>
+                        <li class="step">Bank website processes sensitive transaction data</li>
+                        <li class="step">User visits <strong>blog.example.com</strong> (using Cloudflare with vulnerable features)</li>
+                        <li class="step">Blog website contains HTML that triggers the vulnerability</li>
+                        <li class="step">Cloudflare's parser leaks bank data into blog response</li>
+                        <li class="step">User's browser now has access to bank data from an unrelated site</li>
+                    </ol>
+                </div>
+                
+                <div class="scenario-visualization">
+                    <div class="scenario-steps">
+                        <h3>Scenario Steps</h3>
+                        <ul id="scenario-steps-list">
+                            <li>Access Bank Website</li>
+                            <li>Perform Bank Transaction</li>
+                            <li>Visit Blog Website</li>
+                            <li>View Blog Post (Triggers Vulnerability)</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="scenario-browser">
+                        <div class="browser-toolbar">
+                            <div class="browser-buttons">
+                                <span></span><span></span><span></span>
+                            </div>
+                            <div class="browser-address-bar">
+                                <span id="scenario-url">https://</span>
+                            </div>
+                        </div>
+                        <div id="scenario-content" class="browser-content">
+                            <div class="scenario-placeholder">
+                                <i class="fas fa-globe fa-3x"></i>
+                                <p>The scenario visualization will appear here</p>
+                                <p>Click "Run Demonstration" to begin</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="scenario-log">
+                        <h3>Event Log</h3>
+                        <div id="scenario-log-container" class="log-container">
+                            <p class="log-entry">Waiting for scenario to run...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="memory-view" class="tab-content">
+            <h2>Server Memory Visualization</h2>
+            <p>This view shows the simulated server memory that contains sensitive data from various websites.</p>
+            <p>In the CloudBleed vulnerability, portions of this memory could leak into HTTP responses.</p>
+            
+            <div class="memory-controls">
+                <div class="button-group">
+                    <button id="refresh-memory" class="primary">Refresh Memory View</button>
+                    <button id="clear-memory" class="secondary">Reset Memory</button>
+                </div>
+            </div>
+            
+            <div class="memory-visualization">
+                <div class="memory-header">
+                    <span class="memory-offset-header">Memory Offset</span>
+                    <span class="memory-data-header">Data (each cell = 1 byte)</span>
+                </div>
+                <div id="memory-container" class="memory-container">
+                    <div class="placeholder">Loading memory visualization...</div>
+                </div>
+                
+                <h3>Shared Memory Buffer</h3>
+                <p>This visualization shows how data from different sites is stored in a shared memory buffer.</p>
+                <div id="visualizer-container" class="visualizer-container"></div>
+            </div>
+        </div>
+
+        <div id="about" class="tab-content">
+            <h2>About the CloudBleed Vulnerability</h2>
+            
+            <div class="about-content">
+                <section>
+                    <h3>What was CloudBleed?</h3>
+                    <p>CloudBleed was a critical security vulnerability discovered in February 2017 in Cloudflare's edge servers. The bug caused random chunks of memory to leak into web pages served through Cloudflare's CDN. This memory could contain sensitive information from other websites also using Cloudflare.</p>
+                </section>
+                
+                <section>
+                    <h3>Technical Details</h3>
+                    <p>The vulnerability was triggered when specific HTML patterns were processed by Cloudflare's edge servers with certain features enabled:</p>
+                    <ul>
+                        <li>Buffer overflow in an HTML parser (using Ragel)</li>
+                        <li>Triggered by specific patterns like unclosed HTML tags</li>
+                        <li>The parser would continue reading past the buffer into adjacent memory</li>
+                        <li>This memory could contain data from other websites</li>
+                        <li>The leaked data would be included in HTTP responses</li>
+                    </ul>
+                </section>
+                
+                <section>
+                    <h3>Why It Was So Serious</h3>
+                    <p>CloudBleed was particularly dangerous because:</p>
+                    <ul>
+                        <li>Affected millions of websites that used Cloudflare</li>
+                        <li>Leaked data could include sensitive information like authentication tokens, API keys, private messages, and more</li>
+                        <li>Leaked data could be cached by search engines, making it publicly accessible</li>
+                        <li>Users had no way to know if their data had been exposed</li>
+                    </ul>
+                </section>
+                
+                <section>
+                    <h3>Discovery and Resolution</h3>
+                    <p>The vulnerability was discovered by Tavis Ormandy of Google's Project Zero on February 17, 2017. Cloudflare fixed the immediate issue within hours and completed global mitigation within a week. The bug had been present since September 2016.</p>
+                </section>
+                
+                <section>
+                    <h3>Lessons for Security</h3>
+                    <p>CloudBleed highlighted several important security lessons:</p>
+                    <ul>
+                        <li>Memory safety is critical in network-facing services</li>
+                        <li>Shared infrastructure means shared security risks</li>
+                        <li>Thorough testing is essential when making changes to security-critical code</li>
+                        <li>The importance of proper bounds checking when parsing user input</li>
+                    </ul>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>For educational purposes only</p>
+        <p>by</p>
+        <p>NTU SC3010 Group 63</p>
+    </footer>
+
+    <script src="js/demo.js"></script>
+    <script src="js/visualizer.js"></script>
+</body>
+</html>
