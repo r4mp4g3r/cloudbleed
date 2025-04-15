@@ -2,6 +2,7 @@
  * demo.js
  * Main controller logic for the CloudBleed demonstration
  */
+
 const API_BASE_URL = '/api';
 const API_ENDPOINTS = {
   vulnerableParser: `${API_BASE_URL}/vulnerable-parser`,
