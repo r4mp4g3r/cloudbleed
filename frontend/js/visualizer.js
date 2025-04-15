@@ -914,29 +914,39 @@ class CloudBleedVisualizer {
         this.memoryContainer.innerHTML = '<div class="loading-indicator">Loading memory data...</div>';
       }
       
-       fetch('/api/memory')  // Use a relative path
+      console.log('Fetching memory data from server...');
+      
+      fetch('/api/memory')
         .then(response => {
           if (!response.ok) {
-            throw new Error(`Server returned ${response.status}: ${response.statusText}`);
+            console.error(`Server returned status: ${response.status}`);
+            return response.text().then(text => {
+              throw new Error(`Server error (${response.status}): ${text}`);
+            });
           }
           return response.json();
         })
         .then(data => {
-          console.log('Fetched memory data:', data);
+          console.log('Memory data received:', data);
           if (data && data.memory) {
             this.activeSite = data.memory.activeSite || null;
             this.updateFromServerData(data.memory);
           } else {
-            console.error('Invalid memory data format', data);
-            if (this.memoryContainer) {
-              this.memoryContainer.innerHTML = '<div class="error">Error: Invalid memory data format received from server</div>';
-            }
+            console.error('Invalid memory data format:', data);
+            throw new Error('Invalid memory data format received from server');
           }
         })
         .catch(error => {
-          console.error('Error fetching server memory:', error);
+          console.error('Memory fetch error:', error);
           if (this.memoryContainer) {
-            this.memoryContainer.innerHTML = `<div class="error">Error fetching memory data: ${error.message}</div>`;
+            this.memoryContainer.innerHTML = `
+              <div class="error">
+                Error fetching memory data: ${error.message}
+                <br><br>
+                <button class="retry-button" onclick="window.cloudbleedVisualizer.fetchServerMemory()">
+                  Retry
+                </button>
+              </div>`;
           }
         });
     }
