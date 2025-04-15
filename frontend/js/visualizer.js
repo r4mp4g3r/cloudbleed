@@ -914,7 +914,7 @@ class CloudBleedVisualizer {
         this.memoryContainer.innerHTML = '<div class="loading-indicator">Loading memory data...</div>';
       }
       
-      fetch('http://localhost:3000/api/memory')
+       fetch('/api/memory')  // Use a relative path
         .then(response => {
           if (!response.ok) {
             throw new Error(`Server returned ${response.status}: ${response.statusText}`);
